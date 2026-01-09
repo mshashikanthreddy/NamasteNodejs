@@ -1,6 +1,8 @@
+const dotenv = require("dotenv");
+dotenv.config();
 
 const  { MongoClient } = require('mongodb');
-const url = "mongodb+srv://shashikanth:Umo1PqwvYjAnObn3@backend-projects.ewiwyeo.mongodb.net/"
+const url = `mongodb+srv://${process.env.MONGO_USER}:${process.env.PASSWORD}@backend-projects.ewiwyeo.mongodb.net/`
 
 const client = new MongoClient(url);
 
