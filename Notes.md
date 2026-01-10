@@ -41,3 +41,14 @@ Error - "cannot set the headers after snding the response".
                 placed in application router stack.
 
 - app.use('/',(err,req,res,next) => {}) here, order matters alot in req handler
+
+- app should listen to requests on port only after successful connection of cluster or database, 
+beacuse the data should be loaded even before the application starts.
+
+-create an MongoDB Account , create a M0 free cluster ,create an user,Get the connection String
+
+Install MongoDB compass
+For mongoDB connection Here give "Access from Everywhere" in Network tab then only it will work.
+    - create a database(documents)
+    - create a collection
+        -In there we have fields.
