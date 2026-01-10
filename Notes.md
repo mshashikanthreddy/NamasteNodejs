@@ -45,10 +45,19 @@ Error - "cannot set the headers after snding the response".
 - app should listen to requests on port only after successful connection of cluster or database, 
 beacuse the data should be loaded even before the application starts.
 
--create an MongoDB Account , create a M0 free cluster ,create an user,Get the connection String
+- create an MongoDB Account , create a M0 free cluster ,create an user,Get the connection String
 
 Install MongoDB compass
 For mongoDB connection Here give "Access from Everywhere" in Network tab then only it will work.
     - create a database(documents)
     - create a collection
         -In there we have fields.
+
+The express.json() is json parser gives by express, which we use for every incoming request.
+
+As default we get the 'JSON' data we have to parse and make into a js object.
+
+findOne() returns only one document , if multiple documents exists it returns arbitary(random)
+document mostly old one.
+
+PATCH only updates which is there in schema and nelect other parameters.
