@@ -52,18 +52,19 @@ app.get('/feed', async(req,res) => {
 app.post('/signup', async(req,res) => {
     /* Here we are sending body through 'postman' which parses into JS object
      If we do not use parser the req.body gives undefined*/
-    const dataObj = req.body ; 
+    const data = req.body ; 
     
     // create an instance of User model
-    const user = new User(dataObj);
+    const user = new User(data);
 
     try {
+        
         await user.save();
         res.status(200).send('User added successfully');
     
     }
     catch(err) {
-        res.status(400).send("Failed to add details", err.message);
+        res.status(400).send("Failed to save details" +  err.message);
     }
 });
 
@@ -89,22 +90,35 @@ app.delete('/user', async(req,res) => {
 })
 
 // update which is already there in schema
-app.patch('/user',async(req,res) => {
-    const userId = req.body._id;
+app.patch('/user/:userId',async(req,res) => {
+    const userId = req.params._id;
     const data = req.body;
 
     try{
+
+        const ALLOWED_USER = ['skills','photoUrl','about'];
+
+        const isUpdateAllowed = Object.keys(data).every((k) => {
+            ALLOWED_USER.includes(k);
+        })
+
+        if(!isUpdateAllowed){
+            throw new Error('These fields Cannot be updated');
+        }
+
         //update user details and returns the document before update
-        const previousUser = await User.findByIdAndUpdate({_id:userId},data,{ReturnDocument:"before"});
+        const previousUser = await User.findByIdAndUpdate({_id:userId},data,
+            {ReturnDocument:"before", 
+            runValidators : true});
         if(!previousUser){
             res.status(404).send('user not found');
         }
         else{
-            res.status(400).send(previousUser);
+            res.status(200).send(previousUser);
         }
     }
     catch(err){
-        res.status(400).send(err);
+        res.status(400).send(err.message);
     }
 })
 

@@ -61,3 +61,8 @@ findOne() returns only one document , if multiple documents exists it returns ar
 document mostly old one.
 
 PATCH only updates which is there in schema and nelect other parameters.
+
+The timestamps are created only on intial user creation but if we want to explicitly allow
+we have to put "runValidators" to true which creates timestamp on patch.
+
+we can use the external validator npm package "validator" which validates the fields.
