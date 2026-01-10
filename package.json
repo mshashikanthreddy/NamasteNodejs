@@ -3,5 +3,23 @@
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "mongodb": "^7.0.0"
-  }
+  },
+  "name": "namaste-nodejs",
+  "version": "1.0.0",
+  "description": "Buiding a dev-tinder",
+  "main": "App.js",
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start" : "nodemon App.js",
+    "dev" : "node App.js"
+  },
+  "keywords": [
+    "nodejs",
+    "javascript"
+  ],
+  "author": "shashikanth",
+  "license": "ISC"
 }
