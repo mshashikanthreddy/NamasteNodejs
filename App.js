@@ -1,7 +1,9 @@
-const connectDB = require('./config/database');
+const connectDB = require('./src/config/database');
 const express = require('express');
 const app = express();
-const User = require('./models/user');
+const User = require('./src/models/user');
+const {validateUser} = require('./src/utils/validation');
+const bcrypt = require('bcrypt');
 const { ReturnDocument } = require('mongodb');
 
 app.use(express.json()); //parse JSON for every incoming request.
@@ -52,13 +54,20 @@ app.get('/feed', async(req,res) => {
 app.post('/signup', async(req,res) => {
     /* Here we are sending body through 'postman' which parses into JS object
      If we do not use parser the req.body gives undefined*/
-    const data = req.body ; 
-    
-    // create an instance of User model
-    const user = new User(data);
 
     try {
-        
+        validateUser(req.body);
+
+        const {firstName , lastName , emailId , password} = req.body
+
+        // bcrypt the passwords before storing to database
+       const hashPassword = await bcrypt.hash(password,10);
+         const user = new User({
+            firstName,
+            lastName,
+            emailId,
+            password : hashPassword
+         });
         await user.save();
         res.status(200).send('User added successfully');
     
@@ -67,6 +76,30 @@ app.post('/signup', async(req,res) => {
         res.status(400).send("Failed to save details" +  err.message);
     }
 });
+
+// login API
+app.post('/login', async(req,res) => {
+
+    const {emailId ,password} = req.body;
+    try {
+
+        const user = await User.findOne({emailId : emailId});
+        if(!user){
+            throw new Error('Invalid credentials');
+        }
+        const isValidPassword = await bcrypt.compare(password,user.password);
+        if(!isValidPassword){
+            throw new Error('Invalid credentials');
+        }
+        else{
+            res.status(200).send('Login Successful');
+        }
+
+    }
+    catch(err) {
+        res.status(400).send('Unable to Login : ' + err.message);
+    }
+})
 
 //Delete API
 app.delete('/user', async(req,res) => {
@@ -91,7 +124,7 @@ app.delete('/user', async(req,res) => {
 
 // update which is already there in schema
 app.patch('/user/:userId',async(req,res) => {
-    const userId = req.params._id;
+    const userId = req.params.userId;
     const data = req.body;
 
     try{

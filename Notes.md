@@ -66,3 +66,10 @@ The timestamps are created only on intial user creation but if we want to explic
 we have to put "runValidators" to true which creates timestamp on patch.
 
 we can use the external validator npm package "validator" which validates the fields.
+
+Every request should be "sanitized and validate" before storing the data in the database.
+
+Encrypt the password using npm package "bcrypt" which encrypt using bcrypt.hash and decrypt
+using bcrypt.compare
+
+Use strict : true to ignore the fields which doesn't exist on databse schema.
