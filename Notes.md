@@ -73,3 +73,6 @@ Encrypt the password using npm package "bcrypt" which encrypt using bcrypt.hash 
 using bcrypt.compare
 
 Use strict : true to ignore the fields which doesn't exist on databse schema.
+
+./ => search where ever you are.
+../ => go up one level and search there.

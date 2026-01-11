@@ -1,21 +1,25 @@
 const connectDB = require('./src/config/database');
 const express = require('express');
 const app = express();
-const User = require('./src/models/user');
+const {User} = require('./src/models/user');
 const {validateUser} = require('./src/utils/validation');
 const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+const userAuth = require('./src/middlewares/auth');
 const { ReturnDocument } = require('mongodb');
 
 app.use(express.json()); //parse JSON for every incoming request.
+app.use(cookieParser()); // parse cookies for every incoming request.
 
 // GET single user
-app.get('/user', async(req,res) => {
+app.get('/user', userAuth, async(req,res) => {
 
-    const userEmail = req.body.emailId;
+    const _id = req.body._id;
     // using findOne to find a document
     try 
     {
-        let users = await User.findOne({emailId : userEmail});
+        let users = await User.findById(_id);
         if(users.length === 0)
         {
             res.status(404).send('user not found');
@@ -80,21 +84,22 @@ app.post('/signup', async(req,res) => {
 // login API
 app.post('/login', async(req,res) => {
 
-    const {emailId ,password} = req.body;
+    const {emailId ,password,} = req.body;
     try {
 
         const user = await User.findOne({emailId : emailId});
         if(!user){
             throw new Error('Invalid credentials');
         }
-        const isValidPassword = await bcrypt.compare(password,user.password);
+        const isValidPassword = await user.validatePassword(password);
         if(!isValidPassword){
             throw new Error('Invalid credentials');
         }
         else{
+            const token = await user.getJWT();
+            res.cookie('token',token, {expires : new Date(Date.now() + 900000)});
             res.status(200).send('Login Successful');
         }
-
     }
     catch(err) {
         res.status(400).send('Unable to Login : ' + err.message);

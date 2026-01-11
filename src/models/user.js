@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 const { Schema } = mongoose;
 
@@ -85,6 +87,28 @@ const userSchema = new Schema ({
     }
 );
 
+userSchema.methods.getJWT = async function() {
+    /*Here we should use normal functions to get current instance 'this'
+    If we use Arrow function it takes "this" instance of parent element which becomes error.*/
+    const user = this;
+
+    const token = await jwt.sign({_id:user._id},"Shashi@2000",{expiresIn : 60 * 60});
+    return token;   
+}
+
+userSchema.methods.validatePassword = async function(passwordInputByUser){
+
+    const user = this;
+    const hashedPassword = user.password;
+
+    const isValidPassword = await bcrypt.compare(
+        passwordInputByUser,
+        hashedPassword);
+
+    return isValidPassword;
+}
+
 const User = mongoose.model("User",userSchema);
 
-module.exports = User;
+module.exports = { User
+};
