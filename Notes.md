@@ -76,3 +76,5 @@ Use strict : true to ignore the fields which doesn't exist on databse schema.
 
 ./ => search where ever you are.
 ../ => go up one level and search there.
+
+use "Destructuring" only when you have to specifically import a field in a body, not on every 'require'.
