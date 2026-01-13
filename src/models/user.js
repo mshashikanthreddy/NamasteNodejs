@@ -46,11 +46,16 @@ const userSchema = new Schema ({
     },
     gender : {
         type : String,
-        validate(value) {
-            if(!["male",'female','others'].includes(value)){
-                throw new Error('Gender data is Invalid')
-            }
+        required : true,
+        enum : {
+            values : ['male','female','others'],
+            message : '{VALUE} is Invalid'
         }
+        // validate(value) {
+        //     if(!["male",'female','others'].includes(value)){
+        //         throw new Error('Gender data is Invalid')
+        //     }
+        // }
     },
     photoUrl : {
         type : String,

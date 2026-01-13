@@ -78,3 +78,12 @@ Use strict : true to ignore the fields which doesn't exist on databse schema.
 ../ => go up one level and search there.
 
 use "Destructuring" only when you have to specifically import a field in a body, not on every 'require'.
+
+An index improves query performance by allowing the database to quickly locate documents instead of scanning the entire collection.
+A compound index is an index on multiple fields and is useful when queries commonly filter using those fields together. For uniqueness and race-condition safety, compound unique indexes are preferred.
+
+Index are slow write ( db has to adjust and write according to the consdition)
+It uses so much disk space.
+so, using more indexes reduces efficiency.
+so, for personal project "email" indexing is fine like "unique = true" it automatically set index.
+schema.index({email : 1}) here 1 is ascending, -1 is descending order.
